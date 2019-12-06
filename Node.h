@@ -10,7 +10,8 @@ public:
 	}
 	Node(int k, Node *Pr, Node *Nxt)
 	{
-		key = k; prev = Pr; next = Nxt;
+		key = k; prev = Pr; 
+		next = Nxt;
 	}
 	int &Key() { return key; }
 	friend class List;
