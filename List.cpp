@@ -35,27 +35,26 @@ List::List(List& S){
 		AddToTail(p->Key());
 }
 List::~List(){
-	Node* temp = head;
-	head = head->next;
-	while (head)
-	{
-		delete temp;
-		temp = head;
-		head = head->next;
-	}
+	Clear();
+	delete head;
+	delete tail;
 }
 List & List::operator=(List& S){
 	if (this != &S)
 	{
-		Del();
+		Clear();
 		Node* p;
 		for (p = S.head->next; p != S.tail; p = p->next)
 			AddToTail(p->Key());
 	}
 	return *this;
 }
-//void List::AddAfter(int k, Node *pr){}
-
+void List::AddAfter(int k, Node *pr){
+	Node* q = new Node;
+	q->key = k;
+	q->next = pr->next;
+	pr->next = q;
+}
 void List::AddToHead(int k){
 	Node *temp = new Node(k, head, head->next);
 	head->next->prev = temp;
@@ -67,17 +66,33 @@ void List::AddToTail(int k){
 		tail->prev = temp;
 }
 void List::AddToHead(List& S){
-	Node* p;
-	for (p = S.head->next; p != S.tail; p = p->next)
-		AddToTail(p->Key());
+	Node* q = S.head->next;
+	while (q != S.tail)
+	{
+		AddToHead(q->key);
+		q = q->next;
+	}
 }
 void List::AddToTail(List& S){
-	Node* p;
-	for (p = S.tail->prev; p != S.head; p = p->prev)
-		AddToHead(p->Key());
+	Node* q = S.head->next;
+	while (q != S.tail)
+	{
+		AddToTail(q->key);
+		q = q->next;
+	}
 }
-//void List::AddAfter(int k, Node *pr){} //добавление узла после pr
-//void List::Del(Node *p){} //удаление узла p
+void List::AddAfter(List S, Node *pr){
+	Node* q = S.head->next;
+	while (q != S.tail){
+		AddAfter(q->key, pr);
+		pr = pr->next;
+	}
+}
+void List::Del(Node *p){
+	p->prev->next = p->next;
+	p->next->prev = p->prev;
+	delete p;
+} //удаление узла p
 Node* List::FindKey(int k){
 	if (head == NULL){
 		std::cout << "List is empty" << std::endl;
@@ -94,15 +109,13 @@ Node* List::operator[] (int pos) {
 		for (int i = 0; i != pos && temp != tail; temp = temp->next, i++);
 		return temp;
 	}
+	else {
+		std::cout << "Position not found" << std::endl;
+		return 0;
+	}
 }
 void List::DelHead(){
-	Node *q = head->next;
-	if (q != tail)
-	{
-		head->next = q->next;
-		q->next->prev = head;
-		delete q;
-	}
+	Del(head->next);
 }
 void List::DelTail(){
 	Node *q = tail->prev;
@@ -113,7 +126,7 @@ void List::DelTail(){
 		delete q;
 	}
 }
-void List::Del(){
+void List::Clear(){
 	Node *q = head->next, *p;
 	head->next = tail;
 	tail->prev = head;
@@ -124,21 +137,56 @@ void List::Del(){
 		delete p;
 	}
 }
-//Node * List::Max(){} //нахождение max эл-та списка
+Node* List::Max(){
+	Node *max = nullptr;
+	Node *q = head->next;
+	if (q != tail) { max = q; q = q->next; }
+	while (q != tail){
+		if (max->key < q->key) max = q;
+		q = q->next;
+	}
+	return max;
+}
+Node* List::Min(){
+	Node *min = nullptr;
+	Node *q = head->next;
+	if (q != tail) { 
+		min = q; q = q->next;
+	}
+	while (q != tail){
+		if (min->key > q->key) min = q;
+		q = q->next;
+	}
+	return min;
+}
 bool List::IsEmpty(){
-	if (head->next->next == NULL) return true;
+	if (head->next == tail) return true;
 	return false;
 }
 bool List::IsNotEmpty(){
-	if (head->next->next == NULL) return false;
-	return true;
+	if (head->next == tail) return true;
+	return false;
+}
+bool List::operator==(List S){
+	Node* t = head->next;
+	Node* q = S.head->next;
+	while (t->key == q->key && t != tail && q != S.tail){
+		t = t->next; 
+		q = q->next;
+	}
+	if (t == tail && q == S.tail) return true;
+	else return false;
+}
+bool List::operator!=(List S){
+	if (*this == S) return false;
+	else return true;
 }
 void List::Scan(){
 		int n;
 		int key;
 		std::cout << "Enter N = ";
 		std::cin >> n;
-		Del();
+		Clear();
 		for (int i = 0; i < n; i++)
 		{
 			std::cout << "Enter key = ";

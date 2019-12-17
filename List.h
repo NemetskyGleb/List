@@ -13,29 +13,27 @@ public:
 	~List();
 	List& operator= (List &);
 
-	//void AddAfter(int k, Node *pr); //добавление узла после pr
+	void AddAfter(int k, Node *pr); //добавление узла после pr
 	void AddToHead(int k);  //добавление эл-та в голову
 	void AddToTail(int k);  //добавление эл-та в хвост
-	//void AddAfter(List S, Node *pr); //добавление списка S после pr
+	void AddAfter(List S, Node *pr); //добавление списка S после pr
 	void AddToHead(List&);  //добавление списка в голову
 	void AddToTail(List&);  //добавление списка в хвост
 
-	//void Del(Node *p); //удаление узла p
+	void Del(Node *p); //удаление узла p
 	void DelHead();    //удаление головы
 	void DelTail();    //удаление хвоста
-	void Del();
+	void Clear();
 	Node* FindKey(int k); //поиск по ключу
 	Node* operator[] (int pos);
 
 	bool IsEmpty();
 	bool IsNotEmpty();
-	//void Clear();  //очистка списка, т.е удаляем все, кроме 
-	////фиктивных головы тии хвоста
-	//bool operator== (List);
-	//bool operator!= (List);
+	bool operator== (List);
+	bool operator!= (List);
 
-	//Node *Max();  //нахождение max эл-та списка
-	//Node *Min();  //нахождение min эл-та списка
+	Node* Max();  //нахождение max эл-та списка
+	Node* Min();  //нахождение min эл-та списка
 
 	void Scan();
 	void Print();
